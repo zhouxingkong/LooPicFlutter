@@ -16,6 +16,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, //去掉debug图标
+//      theme: ThemeData(
+//        buttonTheme: ButtonThemeData(
+//            minWidth: double.infinity,
+//            height: double.infinity
+//        ),
+//      ),
       // home:Tabs(),
       initialRoute: '/', //初始化的时候加载的路由
       onGenerateRoute: onGenerateRoute,
