@@ -3,6 +3,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loopic_flutter/module/url_manager.dart';
 
 class LoopicOnlineWidget extends StatefulWidget {
   @override
@@ -11,12 +12,12 @@ class LoopicOnlineWidget extends StatefulWidget {
 
 class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
 
-  String _url = "http://192.168.43.139:8080/loopicserver/show/0";
+  String _url = "${UrlManager.show_url}0";
   int index = 0;
 
   void _nextImage() {
     index++;
-    _url = "http://192.168.43.139:8080/loopicserver/show/$index";
+    _url = "${UrlManager.show_url}${index}";
 //    ImageManager.getInstance().preFetchIndex(index + 1);
 //    ImageManager.getInstance().preFetchIndex(index + 2);
   }
@@ -24,7 +25,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
   void _preImage() {
     if (index > 0) {
       index--;
-      _url = "http://192.168.43.139:8080/loopicserver/show/$index";
+      _url = "${UrlManager.show_url}${index}";
     }
 //    ImageManager.getInstance().preFetchIndex(index+1);
 //    ImageManager.getInstance().preFetchIndex(index+2);
@@ -32,7 +33,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
 
   void _preloadImage(BuildContext context, int nextIndex) {
     precacheImage(new NetworkImage(
-        "http://192.168.43.139:8080/loopicserver/show/$nextIndex"), context);
+        "${UrlManager.show_url}${nextIndex}"), context);
   }
 
   @override

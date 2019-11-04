@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:loopic_flutter/module/url_manager.dart';
 
 class InitWidget extends StatelessWidget {
 //  const InitWidget({Key key}) : super(key: key);
 
   void _preloadImage(BuildContext context, int nextIndex) {
     precacheImage(new NetworkImage(
-        "http://192.168.43.139:8080/loopicserver/show/$nextIndex"), context);
+        "${UrlManager.show_url}${nextIndex}"), context);
   }
 
   @override
@@ -35,6 +36,7 @@ class InitWidget extends StatelessWidget {
           RaisedButton(
             child: Text('网络疾风'),
             onPressed: () {
+              UrlManager.setUrl("192.168.43.139");
               Navigator.pushNamed(context, "/loopic/online");
             },
           ),
