@@ -3,6 +3,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loopic_flutter/module/image_manager.dart';
 
 class LoopicOnlineWidget extends StatefulWidget {
   @override
@@ -11,8 +12,26 @@ class LoopicOnlineWidget extends StatefulWidget {
 
 class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
 
-  String _url = "http://192.168.1.107:8080/loopicserver/show/0";
+  String _url = "http://192.168.43.139:8080/loopicserver/show/0";
   int index = 0;
+
+  void _nextImage() {
+    index++;
+    _url = "http://192.168.43.139:8080/loopicserver/show/$index";
+    ImageManager.getInstance().preFetchIndex(index + 1);
+    ImageManager.getInstance().preFetchIndex(index + 2);
+  }
+
+  void _preImage() {
+    if (index > 0) {
+      index--;
+      _url = "http://192.168.43.139:8080/loopicserver/show/$index";
+    }
+//    ImageManager.getInstance().preFetchIndex(index+1);
+//    ImageManager.getInstance().preFetchIndex(index+2);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +53,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
                 children: <Widget>[
                   Expanded(
                       flex: 4,
-                      child: FlatButton(
+                      child: GestureDetector(
                         child: Text(
                           '文字描述',
                           textAlign: TextAlign.left,
@@ -44,12 +63,14 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
                             fontSize: 18.0,
                           ),
                         ),
-                        onPressed: () {
+                        onTap: () { //单次点击下一张图片
                           setState(() {
-                            index++;
-                            _url =
-                            "http://192.168.1.107:8080/loopicserver/show/$index";
-                            print(_url);
+                            _nextImage();
+                          });
+                        },
+                        onDoubleTap: () { //双次点击回退
+                          setState(() {
+                            _preImage();
                           });
                         },
                       )
@@ -77,11 +98,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
                             ),
                             onPressed: () { //显示上一张图片
                               setState(() {
-                                if (index > 0) {
-                                  index--;
-                                  _url =
-                                  "http://192.168.1.107:8080/loopicserver/show/$index";
-                                }
+                                _preImage();
                               });
                             },
                           ),
@@ -115,8 +132,14 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
           VerticalDivider(color: Colors.grey),
           Expanded(
             flex: 2,
-            child: Image(
-              image: NetworkImage(_url),
+            child: GestureDetector(
+              child: Image(
+                image: ImageManager.getInstance().getImage(_url),
+              ),
+              onHorizontalDragUpdate: (DragUpdateDetails details) {
+//                _nextImage();
+                print("delta= $details.delta");
+              },
             ),
           ),
         ],

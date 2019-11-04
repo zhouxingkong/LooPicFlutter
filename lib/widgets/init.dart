@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loopic_flutter/module/image_manager.dart';
 
 class InitWidget extends StatelessWidget {
 //  const InitWidget({Key key}) : super(key: key);
@@ -6,6 +7,9 @@ class InitWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 //    SystemChrome.setPreferredOrientations(
 //        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    ImageManager.getInstance().preFetchIndex(0);
+    ImageManager.getInstance().preFetchIndex(1);
+    ImageManager.getInstance().preFetchIndex(2);
     return Scaffold(
       appBar: AppBar(
         title: Text("Loopic"),
