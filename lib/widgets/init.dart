@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:loopic_flutter/module/image_manager.dart';
 
 class InitWidget extends StatelessWidget {
 //  const InitWidget({Key key}) : super(key: key);
+
+  void _preloadImage(BuildContext context, int nextIndex) {
+    precacheImage(new NetworkImage(
+        "http://192.168.43.139:8080/loopicserver/show/$nextIndex"), context);
+  }
+
   @override
   Widget build(BuildContext context) {
 //    SystemChrome.setPreferredOrientations(
 //        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    ImageManager.getInstance().preFetchIndex(0);
-    ImageManager.getInstance().preFetchIndex(1);
-    ImageManager.getInstance().preFetchIndex(2);
+    _preloadImage(context, 0);
+    _preloadImage(context, 1);
+    _preloadImage(context, 2);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Loopic"),

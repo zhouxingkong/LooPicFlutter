@@ -3,7 +3,6 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loopic_flutter/module/image_manager.dart';
 
 class LoopicOnlineWidget extends StatefulWidget {
   @override
@@ -18,8 +17,8 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
   void _nextImage() {
     index++;
     _url = "http://192.168.43.139:8080/loopicserver/show/$index";
-    ImageManager.getInstance().preFetchIndex(index + 1);
-    ImageManager.getInstance().preFetchIndex(index + 2);
+//    ImageManager.getInstance().preFetchIndex(index + 1);
+//    ImageManager.getInstance().preFetchIndex(index + 2);
   }
 
   void _preImage() {
@@ -31,7 +30,10 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
 //    ImageManager.getInstance().preFetchIndex(index+2);
   }
 
-
+  void _preloadImage(BuildContext context, int nextIndex) {
+    precacheImage(new NetworkImage(
+        "http://192.168.43.139:8080/loopicserver/show/$nextIndex"), context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,9 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight
     ]);
+
+    _preloadImage(context, index + 1);
+    _preloadImage(context, index + 2);
 
     return Container(
       child: Flex(
@@ -134,7 +139,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
             flex: 2,
             child: GestureDetector(
               child: Image(
-                image: ImageManager.getInstance().getImage(_url),
+                image: NetworkImage(_url),
               ),
               onHorizontalDragUpdate: (DragUpdateDetails details) {
 //                _nextImage();
