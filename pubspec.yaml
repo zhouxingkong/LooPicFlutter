@@ -25,6 +25,8 @@ dependencies:
   cupertino_icons: ^0.1.2
 #  cached_network_image: ^1.1.2+1
   dio: ^3.0.4
+  byte_array: ^0.1.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

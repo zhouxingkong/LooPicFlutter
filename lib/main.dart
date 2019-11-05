@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:loopic_flutter/module/image_manager.dart';
 import 'package:loopic_flutter/routes.dart';
 
@@ -8,6 +9,7 @@ void main() {
 //    DeviceOrientation.landscapeLeft,
 //    DeviceOrientation.landscapeRight
 //  ]);
+  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(MyApp());
 }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loopic_flutter/module/config_manager.dart';
 import 'package:loopic_flutter/module/url_manager.dart';
 
 class InitWidget extends StatelessWidget {
@@ -16,6 +17,7 @@ class InitWidget extends StatelessWidget {
     _preloadImage(context, 0);
     _preloadImage(context, 1);
     _preloadImage(context, 2);
+    ConfigManager.loadTextOnline();
 
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +38,7 @@ class InitWidget extends StatelessWidget {
           RaisedButton(
             child: Text('网络疾风'),
             onPressed: () {
-              UrlManager.setUrl("192.168.31.226");
+              UrlManager.setUrl("192.168.1.107");
               Navigator.pushNamed(context, "/loopic/online");
             },
           ),

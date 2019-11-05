@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
  */
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loopic_flutter/module/config_manager.dart';
 import 'package:loopic_flutter/module/url_manager.dart';
 
 class LoopicOnlineWidget extends StatefulWidget {
@@ -49,16 +50,11 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
     ImageCache imageCache = PaintingBinding.instance.imageCache;
     NetworkImage networkImage = new NetworkImage(
         "${UrlManager.show_url}${index}");
-//    print("移除前${imageCache.currentSize}");
     return networkImage.evict();
-//    Future<NetworkImage> key = networkImage.obtainKey(null);
-//    imageCache.evict(key);
-//    print("移除后${imageCache.currentSize}");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("build");
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
@@ -80,15 +76,20 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Expanded(
-                      flex: 4,
+                    flex: 1,
+                    child: Container(),
+                  ),
+                  Expanded(
+                      flex: 10,
                       child: GestureDetector(
                         child: Text(
-                          '文字描述',
+                          "${ConfigManager.getDecodeText(index)}",
                           textAlign: TextAlign.left,
                           overflow: TextOverflow.clip,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18.0,
+                            decoration: TextDecoration.none,
                           ),
                         ),
                         onTap: () { //单次点击下一张图片
@@ -101,71 +102,70 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
                             _preImage();
                           });
                         },
+                        onLongPress: () { //长按换图
+                          Future.wait([
+                            Dio().post("${UrlManager.change_url}${index}"),
+                            removeFromCache(index),
+                            _preloadImage(context, index),
+                          ]).then((response) {
+                            setState(() {
+                              index--;
+                              _url = "${UrlManager.show_url}${index}";
+                            });
+                          })
+                              .catchError((e) {
+                            print(e);
+                          });
+                        },
                       )
                   ),
-                  Divider(color: Colors.grey),
-                  Expanded(
-                    flex: 1,
-                    child: Flex(
-                      direction: Axis.horizontal,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            child: Text(
-                              '◀',
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            onPressed: () { //显示上一张图片
-                              setState(() {
-                                _preImage();
-                              });
-                            },
-                          ),
-                        ),
-                        VerticalDivider(color: Colors.grey),
-                        Expanded(
-                          flex: 1,
-                          child: FlatButton(
-                            child: Text(
-                              '▼',
-                              textAlign: TextAlign.left,
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18.0,
-                              ),
-                            ),
-                            onPressed: () { //换图
-//                                changeImage(context,index);
-
-                              Future.wait([
-                                Dio().post("${UrlManager.change_url}${index}"),
-                                removeFromCache(index),
-                                _preloadImage(context, index),
-                              ]).then((response) {
-                                setState(() {
-                                  index--;
-                                  _url = "${UrlManager.show_url}${index}";
-                                });
-                              })
-                                  .catchError((e) {
-                                print(e);
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+//                  Divider(color: Colors.grey),
+//                  Expanded(
+//                    flex: 1,
+//                    child: Flex(
+//                      direction: Axis.horizontal,
+//                      mainAxisAlignment: MainAxisAlignment.center,
+//                      mainAxisSize: MainAxisSize.min,
+//                      crossAxisAlignment: CrossAxisAlignment.stretch,
+//                      children: <Widget>[
+//                        Expanded(
+//                          flex: 1,
+//                          child: FlatButton(
+//                            child: Text(
+//                              '▼',
+//                              textAlign: TextAlign.left,
+//                              overflow: TextOverflow.clip,
+//                              style: TextStyle(
+//                                color: Colors.white,
+//                                fontSize: 18.0,
+//                              ),
+//                            ),
+//                            onPressed: () { //换图
+//                            },
+//                          ),
+//                        ),
+//                        Expanded(
+//                          flex: 1,
+//                          child: FlatButton(
+//                            child: Text(
+//                              '◀',
+//                              textAlign: TextAlign.left,
+//                              overflow: TextOverflow.clip,
+//                              style: TextStyle(
+//                                color: Colors.white,
+//                                fontSize: 18.0,
+//                              ),
+//                            ),
+//                            onPressed: () { //显示上一张图片
+//                              setState(() {
+//                                _preImage();
+//                              });
+//                            },
+//                          ),
+//                        ),
+//                      ],
+//                    ),
+//                  ),
                 ],
               )
           ),
@@ -175,18 +175,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
             child: GestureDetector(
               child: Image(
                 image: NetworkImage(_url),
-//                semanticLabel:"第${_ser}",
-//                loadingBuilder:(
-//                  BuildContext context,
-//                  Widget child,
-//                  ImageChunkEvent loadingProgress){
-//                  return Text("ser:${_ser}");
-//                }
               ),
-              onHorizontalDragUpdate: (DragUpdateDetails details) {
-//                _nextImage();
-                print("delta= $details.delta");
-              },
             ),
           ),
         ],

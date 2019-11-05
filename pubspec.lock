@@ -15,6 +15,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
+  byte_array:
+    dependency: "direct main"
+    description:
+      name: byte_array
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.6"
   charcode:
     dependency: transitive
     description:

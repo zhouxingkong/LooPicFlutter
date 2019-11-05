@@ -1,5 +1,5 @@
 class UrlManager {
-  static String url_base = "http://192.168.31.226:8080";
+  static String url_base = "http://192.168.1.107:8080";
   static String show_url = "${url_base}/loopicserver/show/";
   static String change_url = "${url_base}/changepic/";
   static String evict_url = "${url_base}/erasecache";
