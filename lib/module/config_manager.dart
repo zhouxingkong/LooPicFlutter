@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:loopic_flutter/module/url_manager.dart';
 
 class ConfigManager {
+  static bool enableSound = false;
   static List textList = [];
 
   static void loadTextOnline() async {
@@ -12,7 +13,7 @@ class ConfigManager {
       HttpClient httpClient = new HttpClient();
       //打开Http连接
       HttpClientRequest request =
-          await httpClient.getUrl(Uri.parse("${UrlManager.text_url}"));
+      await httpClient.getUrl(Uri.parse("${UrlManager.text_url}"));
       //等待连接服务器（会将请求信息发送给服务器）
       HttpClientResponse response = await request.close();
       //读取响应内容

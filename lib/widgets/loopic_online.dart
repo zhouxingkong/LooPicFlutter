@@ -19,6 +19,14 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
   int index = 0;
 
 //  GlobalKey<> textKey = GlobalKey();
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight
+    ]);
+  }
 
   void _nextImage() {
     index++;
@@ -55,11 +63,6 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
 
   @override
   Widget build(BuildContext context) {
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight
-    ]);
 
     _preloadImage(context, index + 1);
     _preloadImage(context, index + 2);
@@ -171,7 +174,7 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
           ),
           VerticalDivider(color: Colors.grey),
           Expanded(
-            flex: 2,
+            flex: 3,
             child: GestureDetector(
               child: Image(
                 image: NetworkImage(_url),

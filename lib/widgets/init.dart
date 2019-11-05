@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:loopic_flutter/module/config_manager.dart';
 import 'package:loopic_flutter/module/url_manager.dart';
 
-class InitWidget extends StatelessWidget {
-//  const InitWidget({Key key}) : super(key: key);
+class InitWidget extends StatefulWidget {
+  @override
+  _InitWidgetState createState() => _InitWidgetState();
+}
+
+class _InitWidgetState extends State<InitWidget> {
+
+  bool _soundSwitch = false; //维护单选开关状态
+  String _ipValue = "192.168.1.107";
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight
+    ]);
+  }
 
   void _preloadImage(BuildContext context, int nextIndex) {
     precacheImage(new NetworkImage(
@@ -12,8 +29,6 @@ class InitWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-//    SystemChrome.setPreferredOrientations(
-//        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     _preloadImage(context, 0);
     _preloadImage(context, 1);
     _preloadImage(context, 2);
@@ -30,20 +45,73 @@ class InitWidget extends StatelessWidget {
         ],
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          RaisedButton(
-            child: Text('准备好面对疾风'),
-            onPressed: () {},
+          Row(
+            children: <Widget>[
+              Icon(Icons.alarm),
+              Switch(
+                value: _soundSwitch, //当前状态
+                onChanged: (value) {
+                  //重新构建页面
+                  setState(() {
+                    _soundSwitch = value;
+                  });
+                },
+              ),
+            ],
           ),
-          RaisedButton(
-            child: Text('网络疾风'),
-            onPressed: () {
-              UrlManager.setUrl("192.168.1.107");
-              Navigator.pushNamed(context, "/loopic/online");
+          TextField(
+            autofocus: false,
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(
+                prefixIcon: Icon(Icons.cloud_download)
+            ),
+            onChanged: (String value) {
+              _ipValue = value;
             },
+            controller: TextEditingController.fromValue(
+                TextEditingValue(
+                  text: '${this._ipValue == null ? "" : this._ipValue}',
+                  //判断keyword是否为空
+                  // 保持光标在最后
+                  selection: TextSelection.fromPosition(TextPosition(
+                      affinity: TextAffinity.downstream,
+                      offset: '${this._ipValue}'.length)
+                  ),
+                )
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              Expanded(
+                flex: 1,
+                child: RaisedButton(
+                  child: Text('准备好面对疾风'),
+                  onPressed: () {},
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: RaisedButton(
+                  child: Text('网络疾风'),
+                  onPressed: () {
+                    ConfigManager.enableSound = _soundSwitch; //是否开启声音
+                    UrlManager.setUrl(_ipValue);
+                    Navigator.pushNamed(context, "/loopic/online");
+
+                    print("声音${_soundSwitch}");
+                    print("ip:${_ipValue}");
+                  },
+                ),
+              ),
+            ],
+
           ),
         ],
       ),
     );
   }
 }
+
