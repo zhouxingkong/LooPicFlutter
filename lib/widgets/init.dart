@@ -36,7 +36,7 @@ class InitWidget extends StatelessWidget {
           RaisedButton(
             child: Text('网络疾风'),
             onPressed: () {
-              UrlManager.setUrl("192.168.43.139");
+              UrlManager.setUrl("192.168.31.226");
               Navigator.pushNamed(context, "/loopic/online");
             },
           ),

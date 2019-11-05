@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loopic_flutter/module/image_manager.dart';
 import 'package:loopic_flutter/routes.dart';
 
 
@@ -14,6 +15,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ImageManager.evictAllCache(); //清空所有图片缓存
+
     return MaterialApp(
       debugShowCheckedModeBanner: false, //去掉debug图标
 //      theme: ThemeData(

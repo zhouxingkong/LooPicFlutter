@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 /**
  * 网络图片
  */
@@ -13,13 +14,14 @@ class LoopicOnlineWidget extends StatefulWidget {
 class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
 
   String _url = "${UrlManager.show_url}0";
+  double _scale = 1.0;
   int index = 0;
+
+//  GlobalKey<> textKey = GlobalKey();
 
   void _nextImage() {
     index++;
     _url = "${UrlManager.show_url}${index}";
-//    ImageManager.getInstance().preFetchIndex(index + 1);
-//    ImageManager.getInstance().preFetchIndex(index + 2);
   }
 
   void _preImage() {
@@ -27,17 +29,37 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
       index--;
       _url = "${UrlManager.show_url}${index}";
     }
-//    ImageManager.getInstance().preFetchIndex(index+1);
-//    ImageManager.getInstance().preFetchIndex(index+2);
   }
 
-  void _preloadImage(BuildContext context, int nextIndex) {
-    precacheImage(new NetworkImage(
+  /**
+   * 更换图片
+   */
+  void changeImage(BuildContext context, int index) async {
+
+
+  }
+
+
+  Future<void> _preloadImage(BuildContext context, int nextIndex) {
+    return precacheImage(new NetworkImage(
         "${UrlManager.show_url}${nextIndex}"), context);
+  }
+
+  Future<bool> removeFromCache(int index) {
+    ImageCache imageCache = PaintingBinding.instance.imageCache;
+    NetworkImage networkImage = new NetworkImage(
+        "${UrlManager.show_url}${index}");
+//    print("移除前${imageCache.currentSize}");
+    return networkImage.evict();
+//    Future<NetworkImage> key = networkImage.obtainKey(null);
+//    imageCache.evict(key);
+//    print("移除后${imageCache.currentSize}");
   }
 
   @override
   Widget build(BuildContext context) {
+    print("build");
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight
@@ -123,8 +145,20 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
                               ),
                             ),
                             onPressed: () { //换图
-                              setState(() {
+//                                changeImage(context,index);
 
+                              Future.wait([
+                                Dio().post("${UrlManager.change_url}${index}"),
+                                removeFromCache(index),
+                                _preloadImage(context, index),
+                              ]).then((response) {
+                                setState(() {
+                                  index--;
+                                  _url = "${UrlManager.show_url}${index}";
+                                });
+                              })
+                                  .catchError((e) {
+                                print(e);
                               });
                             },
                           ),
@@ -141,6 +175,13 @@ class _LoopicOnlineWidgetState extends State<LoopicOnlineWidget> {
             child: GestureDetector(
               child: Image(
                 image: NetworkImage(_url),
+//                semanticLabel:"第${_ser}",
+//                loadingBuilder:(
+//                  BuildContext context,
+//                  Widget child,
+//                  ImageChunkEvent loadingProgress){
+//                  return Text("ser:${_ser}");
+//                }
               ),
               onHorizontalDragUpdate: (DragUpdateDetails details) {
 //                _nextImage();
